@@ -1,0 +1,131 @@
+/* Border-box causes total size to include paddings and borders */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  --background: #222;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+  font: 1rem/1 'Didot', serif;
+  overflow-x: hidden;
+}
+
+input {
+  position: absolute;
+  width: 1px;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.selector {
+  display: grid;
+  grid-template-areas: 'beethoven-area mozart-area';
+}
+
+label {
+  display: block;
+  cursor: pointer;
+}
+
+.card {
+  background-color: var(--background);
+  position: relative;
+  width: 300px;
+  padding: 20px;
+  box-shadow: 0 10px 20px #FFF6;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.beethoven-card {
+  grid-area: beethoven-area;
+  margin-right: -10px;
+  --swing: -25px;
+  --overlap: 25px;
+}
+
+.mozart-card {
+  grid-area: mozart-area;
+  margin-left: -10px;
+  --swing: 25px;
+  --overlap: -25px;
+}
+
+
+#beethoven:checked ~ .selector .beethoven-card,
+#mozart:checked ~ .selector .mozart-card {
+  animation-name: swing-forwards;
+}
+
+@keyframes swing-forwards {
+  0% {
+    z-index: 1; /* start behind other card */
+    transform: scale(0.9);
+  }
+  50% {
+    transform: translateX(var(--swing));
+  }
+  100% {
+    z-index: 2; /* end in front of other card */
+    transform: translateX(var(--overlap)) scale(1.1);
+  }
+}
+
+/* when a radio button is set, swing the opposite card backwards */
+#mozart:checked ~ .selector .beethoven-card,
+#beethoven:checked ~ .selector .mozart-card {
+  animation-name: swing-backwards;
+}
+
+@keyframes swing-backwards {
+  0% {
+    z-index: 2;  /* start in front of other card */
+    transform: translateX(var(--overlap)) scale(1.1);
+  }
+  50% {
+    transform: translateX(var(--swing));
+  }
+  100% {
+    z-index: 1; /* end behind other card */
+    transform: scale(0.9);
+  }
+}
+
+h1 {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed white;
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 15px 0;
+  padding-left: 30px;
+  line-height: 1.5rem;
+  list-style-type: none;
+  font-size: 1.8rem;
+}
+
+/* increase overlap and swing distance on smaller screens */
+@media (max-width: 560px) {
+  .beethoven-card {
+    margin-right: -85px;
+    --swing: -100px;
+  }
+
+  .mozart-card {
+    margin-left: -85px;
+    --swing: 100px;
+  }
+}
